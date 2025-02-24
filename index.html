@@ -27,65 +27,50 @@
             border-radius: 50%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
-        .popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            width: 80vw;
-            max-width: 400px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            display: none;
-            z-index: 10;
-        }
-        .popup img {
-            width: 100%;
-            border-radius: 10px;
-        }
-        .popup textarea {
-            width: 100%;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            resize: none;
-            box-sizing: border-box;
-        }
-        .popup button {
-            display: block;
-            margin: 10px auto 0;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            background: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-        .popup button:hover {
-            background: #45a049;
-        }
-        .close-btnn {
-            position: absolute;
-            top: -15px;
-            right: -15px;
-            background: red;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            text-align: center;
-            font-size: 20px;
-            line-height: 28px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .close-btnn:hover {
-            background: #d32f2f;
-        }
+      .popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        width: 90vw;
+        max-width: 400px;
+        height: auto;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        display: none;
+        z-index: 10;
+        overflow: hidden;
+    }
+    .popup img {
+        width: 100%;
+        max-height: 50vh;
+        object-fit: contain;
+        border-radius: 10px;
+    }
+    .popup textarea {
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        resize: none;
+        box-sizing: border-box;
+    }
+    .popup button {
+        display: block;
+        margin: 10px auto 0;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+    .popup button:hover {
+        background: #45a049;
+    }
     </style>
 </head>
 <body>
