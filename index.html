@@ -29,7 +29,7 @@
         }
         .popup {
             position: fixed;
-            top: 45%;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
@@ -67,7 +67,7 @@
         .popup button:hover {
             background: #45a049;
         }
-        .close-btn {
+        .close-btnn {
             position: absolute;
             top: -15px;
             right: -15px;
@@ -77,11 +77,14 @@
             border-radius: 50%;
             width: 30px;
             height: 30px;
-            text-align: center;
-            line-height: 30px;
             cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            font-size: 20px;
+            line-height: 28px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .close-btnn:hover {
+            background: #d32f2f;
         }
     </style>
 </head>
@@ -90,7 +93,7 @@
     <input type="file" id="imageInput" accept="image/*" capture="environment" style="display:none;" onchange="handleImage(this)">
     
     <div class="popup" id="imagePopup">
-        <button class="close-btn" onclick="closePopup()">X</button>
+        <button class="close-btnn" onclick="closePopup()">X</button>
         <img id="popupImage" src="" alt="Selected Image">
         <textarea placeholder="Add a note..."></textarea>
         <button onclick="uploadToImgBB()">Send</button>
@@ -110,8 +113,6 @@
 
         function closePopup() {
             document.getElementById('imagePopup').style.display = 'none';
-            document.querySelector('.popup textarea').value = '';
-            document.getElementById('popupImage').src = '';
         }
 
         function uploadToImgBB() {
@@ -120,7 +121,6 @@
             const apiKey = '57527416430ce9299703abece4fbb849';
             const formData = new FormData();
             formData.append('image', imageSrc.split(',')[1]);
-            formData.append('name', note);  // Set note as image title
 
             fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
                 method: 'POST',
@@ -129,9 +129,9 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Image and Note Sent Successfully as Title!');
+                    alert('Image and Note Sent Successfully!');
                     console.log('Image URL:', data.data.url);
-                    console.log('Image Title:', note);
+                    console.log('Note:', note);
                     closePopup();
                 } else {
                     alert('Failed to upload image.');
