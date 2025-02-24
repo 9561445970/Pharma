@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Website</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        body {
+            background: url('https://i.pinimg.com/736x/c9/1e/cf/c91ecf5074df30128e6f5589970c243f.jpg') no-repeat center center;
+            background-size: cover;
+        }
+        .round-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: url('https://i.pinimg.com/736x/b5/a7/c2/b5a7c2b02c1ab1c22a06760b963a6bd5.jpg') no-repeat center center;
+            background-size: cover;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 80vw;
+            max-width: 400px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            display: none;
+            z-index: 10;
+        }
+        .popup img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .popup textarea {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none;
+            box-sizing: border-box;
+        }
+        .popup button {
+            display: block;
+            margin: 10px auto 0;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        .popup button:hover {
+            background: #45a049;
+        }
+        .close-btnn {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 20px;
+            line-height: 28px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .close-btnn:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="round-button" onclick="document.getElementById('imageInput').click();"></div>
+    <input type="file" id="imageInput" accept="image/*" capture="environment" style="display:none;" onchange="handleImage(this)">
+    
+    <div class="popup" id="imagePopup">
+        <button class="close-btnn" onclick="closePopup()">X</button>
+        <img id="popupImage" src="" alt="Selected Image">
+        <textarea placeholder="Add a note..."></textarea>
+        <button onclick="uploadToImgBB()">Send</button>
+    </div>
+    
+    <script>
+        function handleImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('popupImage').src = e.target.result;
+                    document.getElementById('imagePopup').style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function closePopup() {
+            document.getElementById('imagePopup').style.display = 'none';
+        }
+
+        function uploadToImgBB() {
+            const imageSrc = document.getElementById('popupImage').src;
+            const note = document.querySelector('.popup textarea').value;
+            const apiKey = '57527416430ce9299703abece4fbb849';
+            const formData = new FormData();
+            formData.append('image', imageSrc.split(',')[1]);
+
+            fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Image and Note Sent Successfully!');
+                    console.log('Image URL:', data.data.url);
+                    console.log('Note:', note);
+                    closePopup();
+                } else {
+                    alert('Failed to upload image.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error uploading image.');
+            });
+        }
+    </script>
+</body>
+</html>
