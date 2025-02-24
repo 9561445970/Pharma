@@ -27,68 +27,101 @@
             border-radius: 50%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
-      .popup {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        width: 70vw;
-        max-width: 400px;
-        height: auto;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        border-radius: 10px;
-        display: none;
-        z-index: 10;
-        overflow: hidden;
-    }
-    .popup img {
-        width: 100%;
-        max-height: 50vh;
-        object-fit: contain;
-        border-radius: 10px;
-    }
-    .popup textarea {
-        width: 100%;
-        margin-top: 10px;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        resize: none;
-        box-sizing: border-box;
-    }
-    .popup button {
-        display: block;
-        margin: 10px auto 0;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 5px;
-        background: #4CAF50;
-        color: white;
-        cursor: pointer;
-    }
-    .popup button:hover {
-        background: #45a049;
-    }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 70vw;
+            max-width: 400px;
+            height: auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            display: none;
+            z-index: 10;
+            overflow: hidden;
+        }
+        .popup img {
+            width: 100%;
+            max-height: 50vh;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        .popup textarea {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none;
+            box-sizing: border-box;
+        }
+        .popup button {
+            display: block;
+            margin: 10px auto 0;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        .popup button:hover {
+            background: #45a049;
+        }
+        .popup button.loading {
+            cursor: not-allowed;
+            background: #ccc;
+        }
+        .thankyou-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 80vw;
+            max-width: 300px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            z-index: 20;
+        }
+        .thankyou-popup button {
+            margin-top: 10px;
+            padding: 5px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="round-button" onclick="document.getElementById('imageInput').click();"></div>
-    <input type="file" id="imageInput" accept="image/*"  style="display:none;" onchange="handleImage(this)">
-    
+    <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="handleImage(this)">
+
     <div class="popup" id="imagePopup">
         <button class="close-btnn" onclick="closePopup()">X</button>
         <img id="popupImage" src="" alt="Selected Image">
         <textarea placeholder="Add a note..."></textarea>
         <button onclick="uploadToImgBB()">Send</button>
     </div>
-    
+
+    <div class="thankyou-popup" id="thankyouPopup">
+        <p>Thank You for submitting your image. We'll call you in minutes.</p>
+        <button onclick="closeThankYou()">OK</button>
+    </div>
+
     <script>
         function handleImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     document.getElementById('popupImage').src = e.target.result;
                     document.getElementById('imagePopup').style.display = 'block';
                 }
@@ -101,6 +134,11 @@
         }
 
         function uploadToImgBB() {
+            const sendButton = document.querySelector('.popup button:last-of-type');
+            sendButton.innerHTML = 'Sending...';
+            sendButton.classList.add('loading');
+            sendButton.disabled = true;
+
             const imageSrc = document.getElementById('popupImage').src;
             const note = document.querySelector('.popup textarea').value;
             const apiKey = '57527416430ce9299703abece4fbb849';
@@ -111,21 +149,34 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Image and Note Sent Successfully!');
-                    console.log('Image URL:', data.data.url);
-                    console.log('Note:', note);
-                    closePopup();
-                } else {
-                    alert('Failed to upload image.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error uploading image.');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('imagePopup').style.display = 'none';
+                        showThankYouPopup();
+                    } else {
+                        alert('Failed to upload image.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error uploading image.');
+                })
+                .finally(() => {
+                    sendButton.innerHTML = 'Send';
+                    sendButton.classList.remove('loading');
+                    sendButton.disabled = false;
+                });
+        }
+
+        function showThankYouPopup() {
+            const thankYouPopup = document.getElementById('thankyouPopup');
+            thankYouPopup.style.display = 'block';
+        }
+
+        function closeThankYou() {
+            const thankYouPopup = document.getElementById('thankyouPopup');
+            thankYouPopup.style.display = 'none';
         }
     </script>
 </body>
